@@ -1,0 +1,77 @@
+{
+  "biggerIcons": "mobile",
+  "clickableIcons": "desktop",
+  "showAllFileIcons": true,
+  "showAllFolderIcons": false,
+  "minimalFolderIcons": true,
+  "showMarkdownTabIcons": true,
+  "showTitleIcons": true,
+  "showTagPillIcons": true,
+  "showMenuActions": true,
+  "showSuggestionIcons": true,
+  "showQuickSwitcherIcons": true,
+  "showMoveFileIcons": true,
+  "showItemName": "desktop",
+  "biggerSearchResults": "mobile",
+  "maxSearchResults": 50,
+  "colorPicker1": "list",
+  "colorPicker2": "rgb",
+  "uncolorHover": false,
+  "uncolorDrag": false,
+  "uncolorSelect": false,
+  "uncolorQuick": false,
+  "rememberDeletedItems": false,
+  "dialogState": {
+    "iconMode": true,
+    "emojiMode": false,
+    "rulePage": "file"
+  },
+  "appIcons": {},
+  "tabIcons": {},
+  "fileIcons": {
+    "大学内容/信号与系统/信号第1章 基础知识.md": {
+      "color": "red"
+    },
+    "大学内容/信号与系统/信号第2章 连续时间系统时域分析.md": {
+      "color": "red"
+    },
+    "大学内容/信号与系统/信号第3章 离散时间系统的时域分析.md": {
+      "color": "red"
+    },
+    "大学内容/信号与系统/信号第4章 频域分析.md": {
+      "color": "red"
+    },
+    "大学内容/信号与系统/信号第5章 复频域分析.md": {
+      "color": "red",
+      "icon": "lucide-book"
+    },
+    "大学内容/信号与系统/信号第6章 离散时间系统 Z 变换.md": {
+      "color": "red"
+    },
+    "大学内容/信号与系统/信号第7章 系统函数.md": {
+      "color": "red"
+    },
+    "大学内容/信号与系统/信号第8章 系统状态变量分析.md": {
+      "color": "red"
+    }
+  },
+  "bookmarkIcons": {},
+  "tagIcons": {},
+  "propertyIcons": {},
+  "ribbonIcons": {},
+  "fileRules": [
+    {
+      "id": "Chhbx",
+      "name": "无标题规则",
+      "match": "all",
+      "conditions": [
+        {
+          "source": "name",
+          "operator": "contains"
+        }
+      ],
+      "enabled": true
+    }
+  ],
+  "folderRules": []
+}

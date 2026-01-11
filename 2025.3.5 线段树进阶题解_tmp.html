@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>2025.3.5 线段树进阶题解.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="a">A</h1>
+<ul>
+<li>我们创建两颗线段树，每颗线段树就如它原本那样表示 l-r 的总节点</li>
+<li>一棵树从父亲节点往儿子节点连边，另外一棵反过来连</li>
+<li>同时我们在创建一套原始节点</li>
+<li>这样操作一就是简单地在原始节点连边</li>
+<li>操作二就是将原始节点往第一棵树连边，通过线段树优化我们只需要连 logn 条边</li>
+<li>操作三就是第二棵树向原始节点连边</li>
+<li>连完边后跑一边 Dij 即可</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;algorithm&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;queue&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;cstdio&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;cstring&gt;</span></span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> ll long long </span>
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> maxn=<span class="hljs-number">400010</span>;
+
+<span class="hljs-keyword">int</span> n,q,s;
+
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Edge</span>{</span>
+    <span class="hljs-keyword">int</span> u;
+    <span class="hljs-keyword">int</span> v;
+    ll w;
+    <span class="hljs-keyword">int</span> nxt;
+}edge[maxn*<span class="hljs-number">10</span>];
+<span class="hljs-keyword">int</span> head[maxn*<span class="hljs-number">10</span>],cnt;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">addedge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u,<span class="hljs-keyword">int</span> v,ll w)</span></span>{
+    edge[++cnt].v=v;
+    edge[cnt].u=u;
+    edge[cnt].w=w;
+    edge[cnt].nxt=head[u];
+    head[u]=cnt;
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-keyword">int</span> leaf[maxn*<span class="hljs-number">10</span>]; 
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">build</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r)</span></span>{
+    <span class="hljs-keyword">if</span>(l==r){
+        leaf[l]=x;
+        addedge(x,l+<span class="hljs-number">8</span>*n,<span class="hljs-number">0</span>);
+        addedge(l+<span class="hljs-number">8</span>*n,x+<span class="hljs-number">4</span>*n,<span class="hljs-number">0</span>);
+        <span class="hljs-keyword">return</span> ;
+    }
+    addedge(x,x*<span class="hljs-number">2</span>,<span class="hljs-number">0</span>);
+    addedge(x,x*<span class="hljs-number">2</span>+<span class="hljs-number">1</span>,<span class="hljs-number">0</span>);
+    addedge(x*<span class="hljs-number">2</span>+<span class="hljs-number">4</span>*n,x+<span class="hljs-number">4</span>*n,<span class="hljs-number">0</span>);
+    addedge(x*<span class="hljs-number">2</span>+<span class="hljs-number">1</span>+<span class="hljs-number">4</span>*n,x+<span class="hljs-number">4</span>*n,<span class="hljs-number">0</span>);
+    build(x*<span class="hljs-number">2</span>,l,(l+r)/<span class="hljs-number">2</span>);
+    build(x*<span class="hljs-number">2</span>+<span class="hljs-number">1</span>,(l+r)/<span class="hljs-number">2</span>+<span class="hljs-number">1</span>,r);
+    <span class="hljs-keyword">return</span> ;
+}
+<span class="hljs-comment">//操作2</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">add2</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> ql,<span class="hljs-keyword">int</span> qr,<span class="hljs-keyword">int</span> node,ll w)</span></span>{
+    <span class="hljs-keyword">if</span>(ql&lt;=l&amp;&amp;r&lt;=qr){
+        addedge(node,x,w);
+        <span class="hljs-keyword">return</span> ;
+    }
+    <span class="hljs-keyword">int</span> mid=(l+r)/<span class="hljs-number">2</span>;
+    <span class="hljs-keyword">if</span>(ql&lt;=mid) add2(x*<span class="hljs-number">2</span>,l,mid,ql,qr,node,w);
+    <span class="hljs-keyword">if</span>(qr&gt;mid) add2(x*<span class="hljs-number">2</span>+<span class="hljs-number">1</span>,mid+<span class="hljs-number">1</span>,r,ql,qr,node,w);
+    <span class="hljs-keyword">return</span> ;
+}
+<span class="hljs-comment">//操作3</span>
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">add3</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> ql,<span class="hljs-keyword">int</span> qr,<span class="hljs-keyword">int</span> node,ll w)</span></span>{
+    <span class="hljs-keyword">if</span>(ql&lt;=l&amp;&amp;r&lt;=qr){
+        addedge(x+<span class="hljs-number">4</span>*n,node,w);
+        <span class="hljs-keyword">return</span> ;
+    }
+    <span class="hljs-keyword">int</span> mid=(l+r)/<span class="hljs-number">2</span>;
+    <span class="hljs-keyword">if</span>(ql&lt;=mid) add3(x*<span class="hljs-number">2</span>,l,mid,ql,qr,node,w);
+    <span class="hljs-keyword">if</span>(qr&gt;mid) add3(x*<span class="hljs-number">2</span>+<span class="hljs-number">1</span>,mid+<span class="hljs-number">1</span>,r,ql,qr,node,w);
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">node</span>{</span>
+    ll dis;
+    <span class="hljs-keyword">int</span> u;
+};
+<span class="hljs-keyword">bool</span> <span class="hljs-keyword">operator</span> &lt; (node a,node b){
+    <span class="hljs-keyword">return</span> a.dis&gt;b.dis;
+}
+ll dis[maxn*<span class="hljs-number">10</span>];
+<span class="hljs-keyword">int</span> vis[maxn*<span class="hljs-number">10</span>];
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Dij</span><span class="hljs-params">(<span class="hljs-keyword">int</span> s)</span></span>{
+    priority_queue &lt;node&gt; q;
+    <span class="hljs-built_in">memset</span>(dis,<span class="hljs-number">0x3f</span>,<span class="hljs-keyword">sizeof</span>(dis));
+    <span class="hljs-built_in">memset</span>(vis,<span class="hljs-number">0</span>,<span class="hljs-keyword">sizeof</span>(vis));
+    dis[s]=<span class="hljs-number">0</span>;
+    q.push({<span class="hljs-number">0</span>,s});
+    <span class="hljs-keyword">while</span>(!q.empty()){
+        <span class="hljs-keyword">int</span> u=q.top().u;
+        q.pop();
+        <span class="hljs-keyword">if</span>(vis[u]) <span class="hljs-keyword">continue</span>;
+        vis[u]=<span class="hljs-number">1</span>;
+        <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=head[u];i;i=edge[i].nxt){
+            <span class="hljs-keyword">int</span> v=edge[i].v;
+            ll w=edge[i].w;
+            <span class="hljs-keyword">if</span>(vis[v]) <span class="hljs-keyword">continue</span>;
+            <span class="hljs-keyword">if</span>(dis[v]&gt;dis[u]+w){
+                dis[v]=dis[u]+w;
+                <span class="hljs-comment">// cout&lt;&lt;dis[v]&lt;&lt;" "&lt;&lt;w&lt;&lt;endl;</span>
+                q.push({dis[v],v});
+            }
+        }
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-built_in">cin</span>&gt;&gt;n&gt;&gt;q&gt;&gt;s;
+    build(<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,n);
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=q;i++){
+        <span class="hljs-keyword">int</span> tag,v,u,l,r;
+        ll w;
+        <span class="hljs-built_in">cin</span>&gt;&gt;tag;
+        <span class="hljs-keyword">if</span>(tag==<span class="hljs-number">1</span>){
+            <span class="hljs-built_in">cin</span>&gt;&gt;u&gt;&gt;v&gt;&gt;w;
+            addedge(u+<span class="hljs-number">8</span>*n,v+<span class="hljs-number">8</span>*n,w);
+        }
+        <span class="hljs-keyword">if</span>(tag==<span class="hljs-number">2</span>){
+            <span class="hljs-built_in">cin</span>&gt;&gt;u&gt;&gt;l&gt;&gt;r&gt;&gt;w;
+            add2(<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,n,l,r,u+<span class="hljs-number">8</span>*n,w);
+        }
+        <span class="hljs-keyword">if</span>(tag==<span class="hljs-number">3</span>){
+            <span class="hljs-built_in">cin</span>&gt;&gt;u&gt;&gt;l&gt;&gt;r&gt;&gt;w;
+            add3(<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,n,l,r,u+<span class="hljs-number">8</span>*n,w);
+        }
+    }
+
+    Dij(s+<span class="hljs-number">8</span>*n);
+
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++){
+        <span class="hljs-keyword">if</span>(dis[i+<span class="hljs-number">8</span>*n]&gt;=<span class="hljs-number">1e18</span>) <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-number">-1</span>&lt;&lt;<span class="hljs-string">" "</span>;
+        <span class="hljs-keyword">else</span> <span class="hljs-built_in">cout</span>&lt;&lt;dis[i+<span class="hljs-number">8</span>*n]&lt;&lt;<span class="hljs-string">" "</span>;
+    }
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</div></code></pre>
+<h1 id="b">B</h1>
+<ul>
+<li>建一棵权值线段树，从左往右加入数字，加入之前查询比它大的数有多少个统计即可</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;algorithm&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> mid ((l)+(r)&gt;&gt;1)</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-keyword">typedef</span> <span class="hljs-keyword">long</span> <span class="hljs-keyword">long</span> ll;
+
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> maxn=<span class="hljs-number">1e7</span>+<span class="hljs-number">8</span>;
+<span class="hljs-keyword">const</span> ll lim=<span class="hljs-number">1e9</span>;
+
+ll d[maxn];
+<span class="hljs-keyword">int</span> ls[maxn],rs[maxn],node=<span class="hljs-number">0</span>;
+<span class="hljs-keyword">int</span> rt=<span class="hljs-number">0</span>;
+<span class="hljs-keyword">int</span> n;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">push_up</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span></span>{
+    d[x]=d[ls[x]]+d[rs[x]];
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">update</span><span class="hljs-params">(<span class="hljs-keyword">int</span> &amp;x,ll l,ll r,ll col)</span></span>{
+    <span class="hljs-keyword">if</span>(x==<span class="hljs-number">0</span>) x=++node;
+    <span class="hljs-keyword">if</span>(l==r){
+        d[x]++;
+        <span class="hljs-keyword">return</span> ;
+    }
+
+    <span class="hljs-keyword">if</span>(col&lt;=mid) update(ls[x],l,mid,col);
+    <span class="hljs-keyword">else</span> update(rs[x],mid+<span class="hljs-number">1</span>,r,col);
+
+    push_up(x);
+}
+
+<span class="hljs-function">ll <span class="hljs-title">query</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,ll l,ll r,ll val)</span></span>{
+    <span class="hljs-keyword">if</span>(x==<span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">if</span>(l&gt;val) <span class="hljs-keyword">return</span> d[x];
+
+    ll res=<span class="hljs-number">0</span>;
+    <span class="hljs-keyword">if</span>(val&lt;=mid) res+=query(ls[x],l,mid,val);
+    res+=query(rs[x],mid+<span class="hljs-number">1</span>,r,val);
+
+    <span class="hljs-keyword">return</span> res;
+}
+
+  
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-built_in">cin</span>&gt;&gt;n;
+    
+    ll ans=<span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++){
+        ll x;
+        <span class="hljs-built_in">cin</span>&gt;&gt;x;
+        update(rt,<span class="hljs-number">1</span>,lim,x);
+        ans+=query(rt,<span class="hljs-number">1</span>,lim,x);
+    }
+    
+    <span class="hljs-built_in">cout</span>&lt;&lt;ans;
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</div></code></pre>
+<h1 id="c">C</h1>
+<ul>
+<li>用权值线段树维护序列中的数字，用flag来统计区间内存不存在仅出现一次的数，查询时尽可能往左查询</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;algorithm&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> mid ((l)+(r)&gt;&gt;1)</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-keyword">typedef</span> <span class="hljs-keyword">long</span> <span class="hljs-keyword">long</span> ll;
+
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> maxn=<span class="hljs-number">1e7</span>+<span class="hljs-number">8</span>;
+<span class="hljs-keyword">const</span> ll lim=<span class="hljs-number">2e9</span>;
+<span class="hljs-keyword">const</span> ll delta=<span class="hljs-number">1e9</span>;
+
+<span class="hljs-keyword">int</span> d[maxn],ls[maxn],rs[maxn],flag[maxn],node=<span class="hljs-number">0</span>;
+ll a[maxn];
+<span class="hljs-keyword">int</span> rt=<span class="hljs-number">0</span>;
+<span class="hljs-keyword">int</span> n,k;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">push_up</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span></span>{
+    d[x]=d[ls[x]]+d[rs[x]];
+    flag[x]=flag[ls[x]]|flag[rs[x]];
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">update</span><span class="hljs-params">(<span class="hljs-keyword">int</span> &amp;x,ll l,ll r,<span class="hljs-keyword">int</span> col,<span class="hljs-keyword">int</span> val)</span></span>{
+    <span class="hljs-keyword">if</span>(x==<span class="hljs-number">0</span>) x=++node;
+
+    <span class="hljs-keyword">if</span>(l==r){
+        d[x]+=val;
+        <span class="hljs-keyword">if</span>(d[x]==<span class="hljs-number">1</span>) flag[x]=<span class="hljs-number">1</span>;
+        <span class="hljs-keyword">else</span> flag[x]=<span class="hljs-number">0</span>;
+        <span class="hljs-keyword">return</span> ;
+    }
+
+    <span class="hljs-keyword">if</span>(col&lt;=mid) update(ls[x],l,mid,col,val);
+    <span class="hljs-keyword">else</span> update(rs[x],mid+<span class="hljs-number">1</span>,r,col,val);
+
+    push_up(x);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">query</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,ll l,ll r)</span></span>{
+    <span class="hljs-keyword">if</span>(!flag[x]) <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    <span class="hljs-keyword">if</span>(l==r) <span class="hljs-keyword">return</span> l;
+
+    <span class="hljs-keyword">if</span>(flag[rs[x]]) <span class="hljs-keyword">return</span> query(rs[x],mid+<span class="hljs-number">1</span>,r);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> query(ls[x],l,mid);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-built_in">cin</span>&gt;&gt;n&gt;&gt;k;
+
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++) <span class="hljs-built_in">cin</span>&gt;&gt;a[i],a[i]+=delta;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;k;i++) update(rt,<span class="hljs-number">0</span>,lim,a[i],<span class="hljs-number">1</span>);
+  
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n-k+<span class="hljs-number">1</span>;i++){
+        <span class="hljs-keyword">int</span> j=i+k<span class="hljs-number">-1</span>;
+        update(rt,<span class="hljs-number">0</span>,lim,a[j],<span class="hljs-number">1</span>);
+        <span class="hljs-keyword">int</span> x=query(rt,<span class="hljs-number">0</span>,lim);
+        <span class="hljs-keyword">if</span>(x==<span class="hljs-number">-1</span>) <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"Nothing\n"</span>;
+        <span class="hljs-keyword">else</span> <span class="hljs-built_in">cout</span>&lt;&lt;x-delta&lt;&lt;<span class="hljs-built_in">endl</span>;
+        update(rt,<span class="hljs-number">0</span>,lim,a[i],<span class="hljs-number">-1</span>);
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</div></code></pre>
+<h1 id="d">D</h1>
+<ul>
+<li>我们用前缀和数组来转化原始数组，这样询问就转化成 a_r-a_l-1&lt;t 的数有多少，既 a_r&lt;t+a_l-1</li>
+<li>我们前缀和转化完后从右往左加入数字，并同时查询 1-(a_i-1+t)中有多少个数</li>
+<li>还有题目中会出现负数，我们给所有数加一个 1e9 就行</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;algorithm&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> mid ((l)+(r)&gt;&gt;1)</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-keyword">typedef</span> <span class="hljs-keyword">long</span> <span class="hljs-keyword">long</span> ll;
+
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> maxn=<span class="hljs-number">1e7</span>+<span class="hljs-number">8</span>;
+<span class="hljs-keyword">const</span> ll lim=<span class="hljs-number">2e15</span>;
+<span class="hljs-keyword">const</span> ll delta=<span class="hljs-number">1e15</span>;
+
+ll d[maxn];
+<span class="hljs-keyword">int</span> ls[maxn],rs[maxn],node=<span class="hljs-number">0</span>;
+<span class="hljs-keyword">int</span> rt=<span class="hljs-number">0</span>;
+<span class="hljs-keyword">int</span> n;
+ll t;
+ll a[maxn];
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">push_up</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span></span>{
+    d[x]=d[ls[x]]+d[rs[x]];
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">update</span><span class="hljs-params">(<span class="hljs-keyword">int</span> &amp;x,ll l,ll r,ll col)</span></span>{
+    <span class="hljs-keyword">if</span>(x==<span class="hljs-number">0</span>) x=++node;
+    <span class="hljs-keyword">if</span>(l==r){
+        d[x]++;
+        <span class="hljs-keyword">return</span> ;
+    }
+
+    <span class="hljs-keyword">if</span>(col&lt;=mid) update(ls[x],l,mid,col);
+    <span class="hljs-keyword">else</span> update(rs[x],mid+<span class="hljs-number">1</span>,r,col);
+
+    push_up(x);
+}
+
+<span class="hljs-function">ll <span class="hljs-title">query</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,ll l,ll r,ll ql,ll qr)</span></span>{
+    <span class="hljs-keyword">if</span>(x==<span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">if</span>(l&gt;=ql&amp;&amp;r&lt;=qr) <span class="hljs-keyword">return</span> d[x];
+
+    ll res=<span class="hljs-number">0</span>;
+    <span class="hljs-keyword">if</span>(ql&lt;=mid) res+=query(ls[x],l,mid,ql,qr);
+    <span class="hljs-keyword">if</span>(qr&gt;mid) res+=query(rs[x],mid+<span class="hljs-number">1</span>,r,ql,qr);
+
+    <span class="hljs-keyword">return</span> res;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+
+    <span class="hljs-built_in">cin</span>&gt;&gt;n&gt;&gt;t;
+
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++){
+        <span class="hljs-built_in">cin</span>&gt;&gt;a[i];
+    }
+
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++) a[i]+=a[i<span class="hljs-number">-1</span>];
+
+    ll ans=<span class="hljs-number">0</span>;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=n;i&gt;=<span class="hljs-number">1</span>;i--){
+        update(rt,<span class="hljs-number">1</span>,lim,a[i]+delta);
+        ans+=query(rt,<span class="hljs-number">1</span>,lim,<span class="hljs-number">1</span>,a[i<span class="hljs-number">-1</span>]+t+delta<span class="hljs-number">-1</span>);
+    }
+    
+    <span class="hljs-built_in">cout</span>&lt;&lt;ans;
+    
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</div></code></pre>
+<h1 id="e">E</h1>
+<ul>
+<li>我们把问题转化成树上差分，既 a-b 的路径上加一袋 z 救济粮变成 a和b加一袋，lca(a,b) 和 fa(lca(a,b)) 减一袋，对每一个节点用一颗权值线段树维护，处理完后从叶子节点向上递归合并即可，边合并边查询</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;algorithm&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;cstring&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> mid ((l)+(r)&gt;&gt;1)</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> maxn=<span class="hljs-number">2e6</span>;
+
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Edge</span>{</span>
+    <span class="hljs-keyword">int</span> u,v,nxt;
+}edge[maxn*<span class="hljs-number">2</span>];
+<span class="hljs-keyword">int</span> cnt,head[maxn];
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">addedge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> u,<span class="hljs-keyword">int</span> v)</span></span>{
+    edge[++cnt]={u,v,head[u]};
+    head[u]=cnt;
+}
+
+<span class="hljs-keyword">int</span> n,m;
+<span class="hljs-keyword">int</span> X[maxn],Y[maxn],Z[maxn];
+<span class="hljs-keyword">int</span> lim=<span class="hljs-number">0</span>;
+
+<span class="hljs-comment">//LCA</span>
+<span class="hljs-keyword">int</span> dep[maxn],fa[maxn][<span class="hljs-number">32</span>];
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">dfs</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> Fa)</span></span>{
+    dep[x]=dep[Fa]+<span class="hljs-number">1</span>;
+    fa[x][<span class="hljs-number">0</span>]=Fa;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;(<span class="hljs-number">1</span>&lt;&lt;i)&lt;=dep[x];i++){
+        fa[x][i]=fa[fa[x][i<span class="hljs-number">-1</span>]][i<span class="hljs-number">-1</span>];
+    }
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=head[x];i;i=edge[i].nxt){
+        <span class="hljs-keyword">if</span>(edge[i].v!=Fa)
+        dfs(edge[i].v,x);
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">lca</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> y)</span></span>{
+    <span class="hljs-keyword">if</span>(dep[x]&lt;dep[y]) swap(x,y);
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">31</span>;i&gt;=<span class="hljs-number">0</span>;i--){
+        <span class="hljs-keyword">if</span>(dep[fa[x][i]]&gt;=dep[y]) x=fa[x][i];
+        <span class="hljs-keyword">if</span>(x==y) <span class="hljs-keyword">return</span> x;
+    }
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">31</span>;i&gt;=<span class="hljs-number">0</span>;i--){
+        <span class="hljs-keyword">if</span>(fa[x][i]!=fa[y][i]){
+            x=fa[x][i];
+            y=fa[y][i];
+        }
+    }
+    <span class="hljs-keyword">return</span> fa[x][<span class="hljs-number">0</span>];
+}
+
+<span class="hljs-comment">//Segment_Tree</span>
+<span class="hljs-keyword">int</span> d[maxn*<span class="hljs-number">4</span>],t[maxn*<span class="hljs-number">4</span>],ls[maxn*<span class="hljs-number">4</span>],rs[maxn*<span class="hljs-number">4</span>],rt[maxn],node;
+<span class="hljs-keyword">int</span> Ans[maxn];
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">push_up</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span></span>{
+    <span class="hljs-keyword">if</span>(d[ls[x]]&gt;=d[rs[x]]) d[x]=d[ls[x]],t[x]=t[ls[x]];
+    <span class="hljs-keyword">else</span> d[x]=d[rs[x]],t[x]=t[rs[x]];
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">update</span><span class="hljs-params">(<span class="hljs-keyword">int</span> &amp;x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> pos,<span class="hljs-keyword">int</span> val)</span></span>{
+    <span class="hljs-keyword">if</span>(!x) x=++node;
+    <span class="hljs-keyword">if</span>(l==r){
+        d[x]+=val;
+        t[x]=l;
+        <span class="hljs-keyword">return</span> ;
+    }
+  
+    <span class="hljs-keyword">if</span>(pos&lt;=mid) update(ls[x],l,mid,pos,val);
+    <span class="hljs-keyword">else</span> update(rs[x],mid+<span class="hljs-number">1</span>,r,pos,val);
+    push_up(x);
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">merge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> a,<span class="hljs-keyword">int</span> b,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r)</span></span>{
+    <span class="hljs-keyword">if</span>(!a||!b) <span class="hljs-keyword">return</span> a|b;
+    <span class="hljs-keyword">if</span>(l==r){
+        d[a]+=d[b];
+        t[a]=l;
+        <span class="hljs-keyword">return</span> a;
+    }
+  
+    ls[a]=merge(ls[a],ls[b],l,mid);
+    rs[a]=merge(rs[a],rs[b],mid+<span class="hljs-number">1</span>,r);
+
+    push_up(a);
+    <span class="hljs-keyword">return</span> a;
+}
+
+  
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Merge_dfs</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> F)</span></span>{
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=head[x];i;i=edge[i].nxt){
+        <span class="hljs-keyword">int</span> v=edge[i].v;
+        <span class="hljs-keyword">if</span>(v==F) <span class="hljs-keyword">continue</span>;
+        Merge_dfs(v,x);
+        rt[x]=merge(rt[x],rt[v],<span class="hljs-number">1</span>,lim);
+        <span class="hljs-comment">// if(d[rt[x]]) Ans[x]=t[rt[x]];</span>
+    }
+    <span class="hljs-keyword">if</span>(d[rt[x]]&gt;<span class="hljs-number">0</span>) Ans[x]=t[rt[x]];
+    <span class="hljs-comment">// cout&lt;&lt;d[rt[x]]&lt;&lt;endl;</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-built_in">cin</span>&gt;&gt;n&gt;&gt;m;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;n;i++){
+        <span class="hljs-keyword">int</span> u,v;
+        <span class="hljs-built_in">cin</span>&gt;&gt;u&gt;&gt;v;
+        addedge(u,v);
+        addedge(v,u);
+    }
+    dfs(<span class="hljs-number">1</span>,<span class="hljs-number">0</span>);
+
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=m;i++){
+        <span class="hljs-built_in">cin</span>&gt;&gt;X[i]&gt;&gt;Y[i]&gt;&gt;Z[i];
+        lim=max(lim,Z[i]);
+    }
+
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=m;i++){
+        <span class="hljs-keyword">int</span> Lca=lca(X[i],Y[i]);
+        update(rt[X[i]],<span class="hljs-number">1</span>,lim,Z[i],<span class="hljs-number">1</span>);
+        update(rt[Y[i]],<span class="hljs-number">1</span>,lim,Z[i],<span class="hljs-number">1</span>);
+        update(rt[Lca],<span class="hljs-number">1</span>,lim,Z[i],<span class="hljs-number">-1</span>);
+        <span class="hljs-keyword">if</span>(fa[Lca][<span class="hljs-number">0</span>]) update(rt[fa[Lca][<span class="hljs-number">0</span>]],<span class="hljs-number">1</span>,lim,Z[i],<span class="hljs-number">-1</span>);
+    }
+
+    Merge_dfs(<span class="hljs-number">1</span>,<span class="hljs-number">0</span>);
+
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++) <span class="hljs-built_in">cout</span>&lt;&lt;Ans[i]&lt;&lt;<span class="hljs-built_in">endl</span>;
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</div></code></pre>
+<h1 id="f">F</h1>
+<ul>
+<li>用并查集和线段树合并维护</li>
+<li>在建 u和v 的桥时，我们把u和v合并到一个并查集里，并把v的线段树数据合并到u上，查询时查询给定节点的父亲节点线段树数据即可</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;algorithm&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;cstring&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> mid ((l)+(r)&gt;&gt;1)</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> maxn=<span class="hljs-number">2e6</span>;
+
+<span class="hljs-keyword">int</span> d[maxn*<span class="hljs-number">4</span>],ls[maxn*<span class="hljs-number">4</span>],rs[maxn*<span class="hljs-number">4</span>],rt[maxn],node;
+<span class="hljs-keyword">int</span> fa[maxn*<span class="hljs-number">4</span>];
+<span class="hljs-keyword">int</span> ch[maxn*<span class="hljs-number">4</span>][<span class="hljs-number">2</span>];
+<span class="hljs-keyword">int</span> rnk[maxn];
+<span class="hljs-keyword">int</span> ans[maxn];
+<span class="hljs-keyword">int</span> n,m;
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">find</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span></span>{
+    <span class="hljs-keyword">if</span>(x!=fa[x]) <span class="hljs-keyword">return</span> fa[x]=find(fa[x]);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> x;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">update</span><span class="hljs-params">(<span class="hljs-keyword">int</span> &amp;x,<span class="hljs-keyword">int</span> pos,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r)</span></span>{
+    <span class="hljs-keyword">if</span>(!x) x=++node;
+    d[x]=<span class="hljs-number">1</span>;
+    <span class="hljs-keyword">if</span>(l==r) <span class="hljs-keyword">return</span> ;
+    <span class="hljs-keyword">if</span>(pos&lt;=mid)  update(ls[x],pos,l,mid);
+    <span class="hljs-keyword">else</span> update(rs[x],pos,mid+<span class="hljs-number">1</span>,r);
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">merge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> y,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r)</span></span>{
+    <span class="hljs-keyword">if</span>(!x||!y) <span class="hljs-keyword">return</span> x|y;
+    <span class="hljs-keyword">int</span> z=++node;
+    d[z]=d[x]+d[y];
+    <span class="hljs-keyword">if</span>(l==r) <span class="hljs-keyword">return</span> z;
+    ls[z]=merge(ls[x],ls[y],l,mid);
+    rs[z]=merge(rs[x],rs[y],mid+<span class="hljs-number">1</span>,r);
+    <span class="hljs-keyword">return</span> z;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">Query</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> rk,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r)</span></span>{
+    <span class="hljs-keyword">if</span>(d[x]&lt;rk) <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;
+    <span class="hljs-keyword">if</span>(l==r){
+        <span class="hljs-keyword">return</span> ans[l];
+    }
+    <span class="hljs-keyword">if</span>(d[ls[x]]&gt;=rk) <span class="hljs-keyword">return</span> Query(ls[x],rk,l,mid);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> Query(rs[x],rk-d[ls[x]],mid+<span class="hljs-number">1</span>,r);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-built_in">cin</span>&gt;&gt;n&gt;&gt;m;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++){
+        <span class="hljs-built_in">cin</span>&gt;&gt;rnk[i];
+        fa[i]=i;
+        update(rt[i],rnk[i],<span class="hljs-number">1</span>,n);
+        ans[rnk[i]]=i;
+    }
+
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=m;i++){
+        <span class="hljs-keyword">int</span> u,v;
+        <span class="hljs-built_in">cin</span>&gt;&gt;u&gt;&gt;v;
+        <span class="hljs-keyword">int</span> fu=find(u),fv=find(v);
+        <span class="hljs-keyword">if</span>(fu!=fv){
+            fa[fu]=fv;
+            rt[fv]=merge(rt[fu],rt[fv],<span class="hljs-number">1</span>,n);
+        }
+    }
+
+    <span class="hljs-keyword">int</span> q;
+    <span class="hljs-built_in">cin</span>&gt;&gt;q;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=q;i++){
+        <span class="hljs-keyword">char</span> c;
+        <span class="hljs-built_in">cin</span>&gt;&gt;c;
+        <span class="hljs-keyword">int</span> u,v;
+        <span class="hljs-built_in">cin</span>&gt;&gt;u&gt;&gt;v;
+        <span class="hljs-keyword">if</span>(c==<span class="hljs-string">'Q'</span>){
+            <span class="hljs-built_in">cout</span>&lt;&lt;Query(rt[find(u)],v,<span class="hljs-number">1</span>,n)&lt;&lt;<span class="hljs-built_in">endl</span>;
+        }
+        <span class="hljs-keyword">else</span> {
+            <span class="hljs-keyword">int</span> fu=find(u),fv=find(v);
+            <span class="hljs-keyword">if</span>(fu!=fv){
+                fa[fu]=fv;
+                rt[fv]=merge(rt[fu],rt[fv],<span class="hljs-number">1</span>,n);
+            }
+        }
+    }
+}
+</div></code></pre>
+<h1 id="g">G</h1>
+<ul>
+<li>这个问题变成先找有没有距离自己为p的父亲，然后如果有再找这个父亲距离p的儿子有多少个，答案就是这个值减去1</li>
+<li>那么就明朗了，我们从根开始跑dfs，边跑边对每一个点建一棵树，然后我们再递归回去的时候合并子儿子，查询的时候就是查询上述值就行</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;algorithm&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;cstring&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;queue&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;stack&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;map&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;set&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;cmath&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;vector&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> f(i,a,b) for(int i=a;i&lt;=b;i++)</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> mid (l+r)/2</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-keyword">typedef</span> <span class="hljs-keyword">long</span> <span class="hljs-keyword">long</span> ll;
+<span class="hljs-keyword">int</span> t=<span class="hljs-number">1</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N=<span class="hljs-number">1e5</span>+<span class="hljs-number">6</span>;
+
+<span class="hljs-keyword">int</span> n;
+<span class="hljs-built_in">vector</span> &lt;<span class="hljs-keyword">int</span>&gt; son[<span class="hljs-number">2</span>*N];
+<span class="hljs-keyword">int</span> fa[<span class="hljs-number">200005</span>][<span class="hljs-number">20</span>];
+<span class="hljs-keyword">int</span> d[N*<span class="hljs-number">64</span>];
+<span class="hljs-keyword">int</span> ls[N*<span class="hljs-number">64</span>],rs[N*<span class="hljs-number">64</span>];
+<span class="hljs-keyword">int</span> rt[<span class="hljs-number">200005</span>],node=<span class="hljs-number">0</span>;
+<span class="hljs-keyword">int</span> dep[<span class="hljs-number">200005</span>];
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">merge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> y,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r)</span></span>{
+    <span class="hljs-keyword">if</span>(!x||!y) <span class="hljs-keyword">return</span> x|y;
+    <span class="hljs-keyword">int</span> z=++node;
+    ls[z]=merge(ls[x],ls[y],l,mid);
+    rs[z]=merge(rs[x],rs[y],mid+<span class="hljs-number">1</span>,r);
+    d[z]=d[x]+d[y];
+    <span class="hljs-keyword">return</span> z;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">update</span><span class="hljs-params">(<span class="hljs-keyword">int</span> &amp;x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> pos)</span></span>{
+    <span class="hljs-keyword">if</span>(x==<span class="hljs-number">0</span>) x=++node;
+    d[x]=<span class="hljs-number">1</span>;
+    <span class="hljs-keyword">if</span>(l==r){
+        <span class="hljs-keyword">return</span> ;
+    }
+
+    <span class="hljs-keyword">if</span>(pos&lt;=mid) update(ls[x],l,mid,pos);
+    <span class="hljs-keyword">else</span> update(rs[x],mid+<span class="hljs-number">1</span>,r,pos);
+
+    <span class="hljs-comment">// push_up(x);</span>
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">query</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> pos)</span></span>{
+    <span class="hljs-keyword">if</span>(l==r) <span class="hljs-keyword">return</span> d[x];
+    <span class="hljs-keyword">if</span>(pos&lt;=mid) <span class="hljs-keyword">return</span> query(ls[x],l,mid,pos);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> query(rs[x],mid+<span class="hljs-number">1</span>,r,pos);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">dfs</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span></span>{
+    dep[x]=dep[fa[x][<span class="hljs-number">0</span>]]+<span class="hljs-number">1</span>;
+    update(rt[x],<span class="hljs-number">1</span>,N,dep[x]);
+    f(i,<span class="hljs-number">1</span>,<span class="hljs-number">16</span>) fa[x][i]=fa[fa[x][i<span class="hljs-number">-1</span>]][i<span class="hljs-number">-1</span>];
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">auto</span> v:son[x]) dfs(v),rt[x]=merge(rt[x],rt[v],<span class="hljs-number">1</span>,N);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">find</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> K)</span></span>{
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">16</span>;i&gt;=<span class="hljs-number">0</span>;i--){
+        <span class="hljs-keyword">if</span>(K&gt;&gt;i&amp;<span class="hljs-number">1</span>) x=fa[x][i];
+    }
+    <span class="hljs-keyword">return</span> x;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">solve</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-built_in">cin</span>&gt;&gt;n;
+    f(i,<span class="hljs-number">1</span>,n){
+        <span class="hljs-keyword">int</span> f;
+        <span class="hljs-built_in">cin</span>&gt;&gt;f;
+        son[f].push_back(i);
+        fa[i][<span class="hljs-number">0</span>]=f;
+    }
+
+    dfs(<span class="hljs-number">0</span>);
+    <span class="hljs-keyword">int</span> q;
+    <span class="hljs-built_in">cin</span>&gt;&gt;q;
+
+    <span class="hljs-keyword">while</span>(q--){
+        <span class="hljs-keyword">int</span> u,p;
+        <span class="hljs-built_in">cin</span>&gt;&gt;u&gt;&gt;p;
+        u=find(u,p);
+        <span class="hljs-keyword">if</span>(u==<span class="hljs-number">0</span>) <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-number">0</span>&lt;&lt;<span class="hljs-string">" "</span>;
+        <span class="hljs-keyword">else</span> {
+            <span class="hljs-built_in">cout</span>&lt;&lt;query(rt[u],<span class="hljs-number">1</span>,N,dep[u]+p)<span class="hljs-number">-1</span>&lt;&lt;<span class="hljs-string">" "</span>;
+        }
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-built_in">std</span>::ios::sync_with_stdio(<span class="hljs-number">0</span>);
+    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cin</span>.tie(<span class="hljs-number">0</span>);
+    <span class="hljs-comment">// cin&gt;&gt;t;</span>
+    <span class="hljs-keyword">while</span>(t--) solve();
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</div></code></pre>
+<h1 id="h">H</h1>
+<ul>
+<li>用线段树维护 x 轴，再用权值线段树维护每个 y 轴，再用标记永久化维护，放每一个方块时查询放置区间内的最大值，然后再进行修改，最后在整个矩形内查询</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;algorithm&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;cstring&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> mid ((l)+(r)&gt;&gt;1)</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> ls (l+r)*2</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> rs (l+r)*2+1</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> maxn=<span class="hljs-number">2e7</span>;
+
+<span class="hljs-keyword">int</span> n,m,q;
+
+<span class="hljs-comment">// Segy</span>
+<span class="hljs-keyword">int</span> d1[maxn],laz[maxn],node1;
+<span class="hljs-keyword">int</span> ls1[maxn],rs1[maxn];
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">modify</span><span class="hljs-params">(<span class="hljs-keyword">int</span> &amp;x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> ql,<span class="hljs-keyword">int</span> qr,<span class="hljs-keyword">int</span> val)</span></span>{
+    <span class="hljs-keyword">if</span>(!x) x=++node1;
+    laz[x]=max(laz[x],val);
+    <span class="hljs-keyword">if</span>(ql&lt;=l&amp;&amp;r&lt;=qr){
+        d1[x]=max(val,d1[x]);
+        <span class="hljs-keyword">return</span> ;
+    }
+    <span class="hljs-keyword">if</span>(ql&lt;=mid) modify(ls1[x],l,mid,ql,qr,val);
+    <span class="hljs-keyword">if</span>(qr&gt;mid) modify(rs1[x],mid+<span class="hljs-number">1</span>,r,ql,qr,val);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">query</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> ql,<span class="hljs-keyword">int</span> qr)</span></span>{
+    <span class="hljs-keyword">if</span>(!x) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">if</span>(ql&lt;=l&amp;&amp;r&lt;=qr){
+        <span class="hljs-keyword">return</span> max(laz[x],d1[x]);
+    }
+    <span class="hljs-keyword">int</span> res=d1[x];
+    <span class="hljs-keyword">if</span>(ql&lt;=mid) res=max(res,query(ls1[x],l,mid,ql,qr));
+    <span class="hljs-keyword">if</span>(qr&gt;mid) res=max(res,query(rs1[x],mid+<span class="hljs-number">1</span>,r,ql,qr));
+    <span class="hljs-keyword">return</span> res;
+}
+
+<span class="hljs-comment">//Segx</span>
+<span class="hljs-keyword">int</span> d2[maxn],laz2[maxn];
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">Modify</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> ql,<span class="hljs-keyword">int</span> qr,<span class="hljs-keyword">int</span> toql,<span class="hljs-keyword">int</span> toqr,<span class="hljs-keyword">int</span> val)</span></span>{
+    modify(laz2[x],<span class="hljs-number">1</span>,m,toql,toqr,val);
+    <span class="hljs-keyword">if</span>(ql&lt;=l&amp;&amp;r&lt;=qr){
+        modify(d2[x],<span class="hljs-number">1</span>,m,toql,toqr,val);
+        <span class="hljs-keyword">return</span> ;
+    }
+    <span class="hljs-keyword">if</span>(ql&lt;=mid) Modify(ls,l,mid,ql,qr,toql,toqr,val);
+    <span class="hljs-keyword">if</span>(mid&lt;qr) Modify(rs,mid+<span class="hljs-number">1</span>,r,ql,qr,toql,toqr,val);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">Query</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> ql,<span class="hljs-keyword">int</span> qr,<span class="hljs-keyword">int</span> toql,<span class="hljs-keyword">int</span> toqr)</span></span>{
+    <span class="hljs-keyword">int</span> res=query(d2[x],<span class="hljs-number">1</span>,m,toql,toqr);
+    <span class="hljs-keyword">if</span>(ql&lt;=l&amp;&amp;r&lt;=qr){
+        <span class="hljs-keyword">return</span> max(res,query(laz2[x],<span class="hljs-number">1</span>,m,toql,toqr));
+    }
+    <span class="hljs-keyword">if</span>(ql&lt;=mid) res=max(res,Query(ls,l,mid,ql,qr,toql,toqr));
+    <span class="hljs-keyword">if</span>(mid&lt;qr) res=max(res,Query(rs,mid+<span class="hljs-number">1</span>,r,ql,qr,toql,toqr));
+    <span class="hljs-keyword">return</span> res;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-built_in">cin</span>&gt;&gt;n&gt;&gt;m&gt;&gt;q;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=q;i++){
+        <span class="hljs-keyword">int</span> d,s,w,x,y;
+        <span class="hljs-built_in">cin</span>&gt;&gt;d&gt;&gt;s&gt;&gt;w&gt;&gt;x&gt;&gt;y;
+        <span class="hljs-keyword">int</span> height=Query(<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,n,x+<span class="hljs-number">1</span>,x+d,y+<span class="hljs-number">1</span>,y+s);
+        Modify(<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,n,x+<span class="hljs-number">1</span>,x+d,y+<span class="hljs-number">1</span>,y+s,height+w);
+    }
+    <span class="hljs-built_in">cout</span>&lt;&lt;Query(<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,n,<span class="hljs-number">1</span>,n,<span class="hljs-number">1</span>,m);
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</div></code></pre>
+<h1 id="i">I</h1>
+<ul>
+<li>对于每一个位置的数 a_i 转化为点对 (i,a_i) 在二维平面上，这样子查询 a_i 的逆序对就变成了查询矩形 (1,a_i+1),(i-1,lim) 和矩形 (i+1,a_i-1),(n,1) 两个平面上的点对数有多少，同 G 题，不过我们可以用树状数组来维护 x 轴，用权值线段树来维护 y 轴</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;algorithm&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;cstring&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> mid ((l)+(r)&gt;&gt;1)</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> maxn=<span class="hljs-number">2e7</span>;
+<span class="hljs-keyword">typedef</span> <span class="hljs-keyword">long</span> <span class="hljs-keyword">long</span> ll;
+
+ll d[maxn];
+<span class="hljs-keyword">int</span> ls[maxn],rs[maxn],node;
+<span class="hljs-keyword">int</span> n,m;
+<span class="hljs-keyword">int</span> t[maxn],rnk[maxn],a[maxn];
+ll ans=<span class="hljs-number">0</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">update</span><span class="hljs-params">(<span class="hljs-keyword">int</span> &amp;x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> p,<span class="hljs-keyword">int</span> val)</span></span>{
+    <span class="hljs-keyword">if</span>(!x) x=++node;
+    d[x]+=val;
+    <span class="hljs-keyword">if</span>(l==r) <span class="hljs-keyword">return</span> ;
+    <span class="hljs-keyword">if</span>(p&lt;=mid) update(ls[x],l,mid,p,val);
+    <span class="hljs-keyword">else</span> update(rs[x],mid+<span class="hljs-number">1</span>,r,p,val);
+}
+
+<span class="hljs-function">ll <span class="hljs-title">query</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> ql,<span class="hljs-keyword">int</span> qr)</span></span>{
+    <span class="hljs-keyword">if</span>(ql&lt;=l&amp;&amp;qr&gt;=r) <span class="hljs-keyword">return</span> d[x];
+    ll res=<span class="hljs-number">0</span>;
+    <span class="hljs-keyword">if</span>(ql&lt;=mid) res+=query(ls[x],l,mid,ql,qr);
+    <span class="hljs-keyword">if</span>(mid&lt;qr) res+=query(rs[x],mid+<span class="hljs-number">1</span>,r,ql,qr);
+    <span class="hljs-keyword">return</span> res;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">t_update</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> p,<span class="hljs-keyword">int</span> val)</span></span>{
+    <span class="hljs-keyword">while</span>(x&lt;=n){
+        update(t[x],<span class="hljs-number">1</span>,n,p,val);
+        x+=x&amp;(-x);
+    }
+}
+
+<span class="hljs-function">ll <span class="hljs-title">t_query</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> ql,<span class="hljs-keyword">int</span> qr)</span></span>{
+    ll res=<span class="hljs-number">0</span>;
+    <span class="hljs-keyword">while</span>(x){
+        res+=query(t[x],<span class="hljs-number">1</span>,n,ql,qr);
+        x-=x&amp;(-x);
+    }
+    <span class="hljs-keyword">return</span> res;
+}
+
+<span class="hljs-function">ll <span class="hljs-title">Query</span><span class="hljs-params">(<span class="hljs-keyword">int</span> xl,<span class="hljs-keyword">int</span> xr,<span class="hljs-keyword">int</span> ql,<span class="hljs-keyword">int</span> qr)</span></span>{
+    <span class="hljs-keyword">if</span>(ql&gt;qr) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">return</span> t_query(xr,ql,qr)-t_query(xl<span class="hljs-number">-1</span>,ql,qr);
+    }
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-built_in">cin</span>&gt;&gt;n&gt;&gt;m;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=n;i++){
+        <span class="hljs-built_in">cin</span>&gt;&gt;a[i];
+        rnk[a[i]]=i;
+        t_update(i,a[i],<span class="hljs-number">1</span>);
+    }
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">2</span>;i&lt;=n;i++){
+        ans+=Query(<span class="hljs-number">1</span>,i<span class="hljs-number">-1</span>,a[i]+<span class="hljs-number">1</span>,n);
+    }
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=m;i++){
+        <span class="hljs-keyword">int</span> p;
+        <span class="hljs-built_in">cin</span>&gt;&gt;p;
+        p=rnk[p];
+        <span class="hljs-built_in">cout</span>&lt;&lt;ans&lt;&lt;<span class="hljs-built_in">endl</span>;
+        ans-=Query(<span class="hljs-number">1</span>,p<span class="hljs-number">-1</span>,a[p]+<span class="hljs-number">1</span>,n)+Query(p+<span class="hljs-number">1</span>,n,<span class="hljs-number">1</span>,a[p]<span class="hljs-number">-1</span>);
+        t_update(p,a[p],<span class="hljs-number">-1</span>);
+    }
+}
+</div></code></pre>
+<h1 id="j">J</h1>
+<ul>
+<li>判断二分图可以用扩展域并查集，由于要支持撤销所以不能路径压缩，而应按秩合并（和可持久化并查集差不多的注意点）</li>
+<li></li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;algorithm&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;cstring&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;vector&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> mid ((l)+(r)&gt;&gt;1)</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> ls ((l+r)*2)</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> rs ((l+r)*2+1)</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> maxn=<span class="hljs-number">1e5</span>;
+
+<span class="hljs-keyword">int</span> n,m,k;
+<span class="hljs-keyword">int</span> fa[maxn],height[maxn];
+
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Edge</span>{</span>
+    <span class="hljs-keyword">int</span> u,v;
+}e[maxn];
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">stk</span>{</span>
+    <span class="hljs-keyword">int</span> u,v,add;
+}st[maxn];
+<span class="hljs-keyword">int</span> top=<span class="hljs-number">0</span>;
+<span class="hljs-built_in">vector</span> &lt;<span class="hljs-keyword">int</span>&gt; t[maxn];
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">find</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span></span>{
+    <span class="hljs-keyword">while</span>(x!=fa[x]) x=fa[x];
+    <span class="hljs-keyword">return</span> fa[x];
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">merge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> y)</span></span>{
+    <span class="hljs-keyword">int</span> fx=find(x),fy=find(y);
+    <span class="hljs-keyword">if</span>(height[fx]&gt;height[fy]) swap(fx,fy);
+    st[++top]={fx,fy,height[fx]==height[fy]};
+    fa[fx]=fy;
+    <span class="hljs-keyword">if</span>(height[fx]==height[fy]) height[fy]++;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">update</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> ql,<span class="hljs-keyword">int</span> qr,<span class="hljs-keyword">int</span> val)</span></span>{
+    <span class="hljs-keyword">if</span>(ql&lt;=l&amp;&amp;r&lt;=qr){
+        t[x].push_back(val);
+        <span class="hljs-keyword">return</span> ;
+    }
+
+    <span class="hljs-keyword">if</span>(ql&lt;=mid) update(ls,l,mid,ql,qr,val);
+    <span class="hljs-keyword">if</span>(qr&gt;mid) update(rs,mid+<span class="hljs-number">1</span>,r,ql,qr,val);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">query</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r)</span></span>{
+    <span class="hljs-keyword">int</span> ans=<span class="hljs-number">1</span>;
+    <span class="hljs-keyword">int</span> lasttop=top;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">0</span>;i&lt;t[x].size();i++){
+        <span class="hljs-keyword">int</span> fu=find(e[t[x].at(i)].u);
+        <span class="hljs-keyword">int</span> fv=find(e[t[x].at(i)].v);
+        <span class="hljs-keyword">if</span>(fu==fv){
+            <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> k=l;k&lt;=r;k++) <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"NO\n"</span>;
+            ans=<span class="hljs-number">0</span>;
+            <span class="hljs-keyword">break</span>;
+        }
+        merge(e[t[x].at(i)].u,e[t[x].at(i)].v+n);
+        merge(e[t[x].at(i)].v,e[t[x].at(i)].u+n);
+    }
+    <span class="hljs-keyword">if</span>(ans){
+        <span class="hljs-keyword">if</span>(l==r) <span class="hljs-built_in">cout</span>&lt;&lt;<span class="hljs-string">"YES\n"</span>;
+        <span class="hljs-keyword">else</span> {
+            query(ls,l,mid);
+            query(rs,mid+<span class="hljs-number">1</span>,r);
+        }
+    }
+    <span class="hljs-keyword">while</span>(top&gt;lasttop){
+        height[fa[st[top].u]]-=st[top].add;
+        fa[st[top].u]=st[top].u;
+        top--;
+    }
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-built_in">cin</span>&gt;&gt;n&gt;&gt;m&gt;&gt;k;
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=m;i++){
+        <span class="hljs-built_in">cin</span>&gt;&gt;e[i].u&gt;&gt;e[i].v;
+        <span class="hljs-keyword">int</span> l,r;
+        <span class="hljs-built_in">cin</span>&gt;&gt;l&gt;&gt;r;
+        l++;
+        update(<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,k,l,r,i);
+    }
+    <span class="hljs-keyword">for</span>(<span class="hljs-keyword">int</span> i=<span class="hljs-number">1</span>;i&lt;=<span class="hljs-number">2</span>*n;i++) fa[i]=i,height[i]=<span class="hljs-number">1</span>;
+  
+    query(<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,k);
+
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</div></code></pre>
+<h1 id="k">K</h1>
+<ul>
+<li>正解平衡树，但是我们也可以用权值线段树来完成这些操作</li>
+<li>插入删除正常操作</li>
+<li>找x的排位即是找 1-(x-1) 中有多少个数</li>
+<li>找第k大见代码</li>
+<li>找前驱先尽量在不超过给定值的区间内往右找</li>
+<li>找后驱则反过来</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;algorithm&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;cstring&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;queue&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;stack&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;map&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;set&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;cmath&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;vector&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> f(i,a,b) for(int i=a;i&lt;=b;i++)</span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> mid (l+r)/2</span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+<span class="hljs-keyword">typedef</span> <span class="hljs-keyword">long</span> <span class="hljs-keyword">long</span> ll;
+<span class="hljs-keyword">int</span> t=<span class="hljs-number">1</span>;
+<span class="hljs-keyword">const</span> <span class="hljs-keyword">int</span> N=<span class="hljs-number">2e5</span>;
+
+<span class="hljs-keyword">int</span> d[N*<span class="hljs-number">10</span>],ls[N*<span class="hljs-number">10</span>],rs[N*<span class="hljs-number">10</span>];
+<span class="hljs-keyword">int</span> n;
+<span class="hljs-keyword">int</span> node=<span class="hljs-number">0</span>;
+<span class="hljs-keyword">int</span> rt=<span class="hljs-number">0</span>;
+<span class="hljs-keyword">int</span> lim=<span class="hljs-number">2e7</span>+<span class="hljs-number">10</span>;
+<span class="hljs-keyword">int</span> delta=<span class="hljs-number">1e7</span>+<span class="hljs-number">1</span>;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">push_up</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x)</span></span>{
+    d[x]=d[ls[x]]+d[rs[x]];
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">update</span><span class="hljs-params">(<span class="hljs-keyword">int</span> &amp;x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> pos,<span class="hljs-keyword">int</span> val)</span></span>{
+    <span class="hljs-keyword">if</span>(x==<span class="hljs-number">0</span>) x=++node;
+    <span class="hljs-keyword">if</span>(l==r){
+        d[x]+=val;
+        <span class="hljs-keyword">return</span> ;
+    }
+
+    <span class="hljs-keyword">if</span>(pos&lt;=mid) update(ls[x],l,mid,pos,val);
+    <span class="hljs-keyword">else</span> update(rs[x],mid+<span class="hljs-number">1</span>,r,pos,val);
+
+    push_up(x);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">query_cnt</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> pos)</span></span>{
+    <span class="hljs-keyword">if</span>(x==<span class="hljs-number">0</span>) <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">if</span>(r&lt;=pos) <span class="hljs-keyword">return</span> d[x];
+
+    <span class="hljs-keyword">int</span> ret=<span class="hljs-number">0</span>;
+    ret+=query_cnt(ls[x],l,mid,pos);
+    <span class="hljs-keyword">if</span>(pos&gt;mid) ret+=query_cnt(rs[x],mid+<span class="hljs-number">1</span>,r,pos);
+    <span class="hljs-keyword">return</span> ret;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">query_rk</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> rk)</span></span>{
+    <span class="hljs-keyword">if</span>(l==r) <span class="hljs-keyword">return</span> l;
+    <span class="hljs-keyword">if</span>(rk&lt;=d[ls[x]]) <span class="hljs-keyword">return</span> query_rk(ls[x],l,mid,rk);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> query_rk(rs[x],mid+<span class="hljs-number">1</span>,r,rk-d[ls[x]]);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">find_pre</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r)</span></span>{
+    <span class="hljs-keyword">if</span>(l==r) <span class="hljs-keyword">return</span> l;
+    <span class="hljs-keyword">if</span>(d[rs[x]]) <span class="hljs-keyword">return</span> find_pre(rs[x],mid+<span class="hljs-number">1</span>,r);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> find_pre(ls[x],l,mid);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">query_pre</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> pos)</span></span>{
+    <span class="hljs-keyword">if</span>(r&lt;pos){
+        <span class="hljs-keyword">if</span>(d[x]) <span class="hljs-keyword">return</span> find_pre(x,l,r);
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(pos&gt;mid+<span class="hljs-number">1</span>&amp;&amp;d[rs[x]]){
+        <span class="hljs-keyword">int</span> res=query_pre(rs[x],mid+<span class="hljs-number">1</span>,r,pos);
+        <span class="hljs-keyword">if</span>(res) <span class="hljs-keyword">return</span> res;
+    }
+    <span class="hljs-keyword">return</span> query_pre(ls[x],l,mid,pos);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">find_back</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r)</span></span>{
+    <span class="hljs-keyword">if</span>(l==r) <span class="hljs-keyword">return</span> l;
+    <span class="hljs-keyword">if</span>(d[ls[x]]) <span class="hljs-keyword">return</span> find_back(ls[x],l,mid);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> find_back(rs[x],mid+<span class="hljs-number">1</span>,r);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">query_back</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> l,<span class="hljs-keyword">int</span> r,<span class="hljs-keyword">int</span> pos)</span></span>{
+    <span class="hljs-keyword">if</span>(l&gt;pos){
+        <span class="hljs-keyword">if</span>(d[x]) <span class="hljs-keyword">return</span> find_back(x,l,r);
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+    }
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(pos&lt;=mid&amp;&amp;d[ls[x]]){
+        <span class="hljs-keyword">int</span> res=query_back(ls[x],l,mid,pos);
+        <span class="hljs-keyword">if</span>(res) <span class="hljs-keyword">return</span> res;
+    }
+    <span class="hljs-keyword">return</span> query_back(rs[x],mid+<span class="hljs-number">1</span>,r,pos);
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">solve</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-built_in">cin</span>&gt;&gt;n;
+    f(i,<span class="hljs-number">1</span>,n){
+        <span class="hljs-keyword">int</span> opt,x;
+        <span class="hljs-built_in">cin</span>&gt;&gt;opt&gt;&gt;x;
+        x+=delta;
+        <span class="hljs-comment">// cout&lt;&lt;opt&lt;&lt;":";</span>
+        <span class="hljs-keyword">if</span>(opt==<span class="hljs-number">1</span>) update(rt,<span class="hljs-number">1</span>,lim,x,<span class="hljs-number">1</span>);
+        <span class="hljs-keyword">if</span>(opt==<span class="hljs-number">2</span>) update(rt,<span class="hljs-number">1</span>,lim,x,<span class="hljs-number">-1</span>);
+        <span class="hljs-keyword">if</span>(opt==<span class="hljs-number">3</span>) <span class="hljs-built_in">cout</span>&lt;&lt;query_cnt(rt,<span class="hljs-number">1</span>,lim,x<span class="hljs-number">-1</span>)+<span class="hljs-number">1</span>&lt;&lt;<span class="hljs-string">"\n"</span>;
+        <span class="hljs-keyword">if</span>(opt==<span class="hljs-number">4</span>) <span class="hljs-built_in">cout</span>&lt;&lt;query_rk(rt,<span class="hljs-number">1</span>,lim,x-delta)-delta&lt;&lt;<span class="hljs-string">"\n"</span>;
+        <span class="hljs-keyword">if</span>(opt==<span class="hljs-number">5</span>) <span class="hljs-built_in">cout</span>&lt;&lt;query_pre(rt,<span class="hljs-number">1</span>,lim,x)-delta&lt;&lt;<span class="hljs-string">"\n"</span>;
+        <span class="hljs-keyword">if</span>(opt==<span class="hljs-number">6</span>) <span class="hljs-built_in">cout</span>&lt;&lt;query_back(rt,<span class="hljs-number">1</span>,lim,x)-delta&lt;&lt;<span class="hljs-string">"\n"</span>;
+    }
+}
+
+
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-built_in">std</span>::ios::sync_with_stdio(<span class="hljs-number">0</span>);
+    <span class="hljs-built_in">std</span>::<span class="hljs-built_in">cin</span>.tie(<span class="hljs-number">0</span>);
+    <span class="hljs-comment">// cin&gt;&gt;t;</span>
+    <span class="hljs-keyword">while</span>(t--) solve();
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</div></code></pre>
+<ul>
+<li>下平衡树正解</li>
+</ul>
+<pre class="hljs"><code><div><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;iostream&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;algorithm&gt;</span></span>
+<span class="hljs-meta">#<span class="hljs-meta-keyword">include</span><span class="hljs-meta-string">&lt;random&gt;</span></span>
+<span class="hljs-keyword">using</span> <span class="hljs-keyword">namespace</span> <span class="hljs-built_in">std</span>;
+
+<span class="hljs-function"><span class="hljs-built_in">std</span>::mt19937 <span class="hljs-title">rnd</span><span class="hljs-params">(<span class="hljs-number">233</span>)</span></span>;
+
+<span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">Tree</span>{</span>
+    <span class="hljs-keyword">int</span> l,r;
+    <span class="hljs-keyword">int</span> val,key;
+    <span class="hljs-keyword">int</span> size;
+}fhq[<span class="hljs-number">100005</span>];
+<span class="hljs-keyword">int</span> cnt,root;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">update</span><span class="hljs-params">(<span class="hljs-keyword">int</span> now)</span></span>{
+    fhq[now].size=fhq[fhq[now].l].size+fhq[fhq[now].r].size+<span class="hljs-number">1</span>;
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">newnode</span><span class="hljs-params">(<span class="hljs-keyword">int</span> val)</span></span>{
+    fhq[++cnt].val=val;
+    fhq[cnt].key=rnd();
+    fhq[cnt].size=<span class="hljs-number">1</span>;
+    <span class="hljs-keyword">return</span> cnt;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">split</span><span class="hljs-params">(<span class="hljs-keyword">int</span> now,<span class="hljs-keyword">int</span> val,<span class="hljs-keyword">int</span> &amp;x,<span class="hljs-keyword">int</span> &amp;y)</span></span>{
+    <span class="hljs-keyword">if</span>(!now) x=<span class="hljs-number">0</span>,y=<span class="hljs-number">0</span>;
+    <span class="hljs-keyword">else</span> {
+        <span class="hljs-keyword">if</span>(fhq[now].val&lt;=val){
+            x=now;
+            split(fhq[now].r,val,fhq[now].r,y);
+        }
+        <span class="hljs-keyword">else</span> {
+            y=now;
+            split(fhq[now].l,val,x,fhq[now].l);
+        }
+        update(now);
+    }
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">merge</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x,<span class="hljs-keyword">int</span> y)</span></span>{
+    <span class="hljs-keyword">if</span>(!x||!y) <span class="hljs-keyword">return</span> x+y;
+    <span class="hljs-keyword">if</span>(fhq[x].key&gt;fhq[y].key){
+        fhq[x].r=merge(fhq[x].r,y);
+        update(x);
+        <span class="hljs-keyword">return</span> x;
+    }
+    <span class="hljs-keyword">else</span> {
+        fhq[y].l=merge(x,fhq[y].l);
+        update(y);
+        <span class="hljs-keyword">return</span> y;
+    }
+}
+
+<span class="hljs-keyword">int</span> x,y,z;
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">insert</span><span class="hljs-params">(<span class="hljs-keyword">int</span> val)</span></span>{
+    split(root,val,x,y);
+    root=merge(merge(x,newnode(val)),y);
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">del</span><span class="hljs-params">(<span class="hljs-keyword">int</span> val)</span></span>{
+    split(root,val,x,z);
+    split(x,val<span class="hljs-number">-1</span>,x,y);
+    y=merge(fhq[y].l,fhq[y].r);
+    root=merge(merge(x,y),z);
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">getrank</span><span class="hljs-params">(<span class="hljs-keyword">int</span> val)</span></span>{
+    split(root,val<span class="hljs-number">-1</span>,x,y);
+    <span class="hljs-built_in">cout</span>&lt;&lt;fhq[x].size+<span class="hljs-number">1</span>&lt;&lt;<span class="hljs-built_in">endl</span>;
+    root=merge(x,y);
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">getnum</span><span class="hljs-params">(<span class="hljs-keyword">int</span> rank)</span></span>{
+    <span class="hljs-keyword">int</span> now=root;
+    <span class="hljs-keyword">while</span>(now){
+        <span class="hljs-keyword">if</span>(fhq[fhq[now].l].size+<span class="hljs-number">1</span>==rank) <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(fhq[fhq[now].l].size&gt;=rank) now=fhq[now].l;
+        <span class="hljs-keyword">else</span> {
+            rank-=fhq[fhq[now].l].size+<span class="hljs-number">1</span>;
+            now=fhq[now].r;
+        }
+    }
+    <span class="hljs-built_in">cout</span>&lt;&lt;fhq[now].val&lt;&lt;<span class="hljs-built_in">endl</span>;
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">pre</span><span class="hljs-params">(<span class="hljs-keyword">int</span> val)</span></span>{
+    split(root,val<span class="hljs-number">-1</span>,x,y);
+    <span class="hljs-keyword">int</span> now=x;
+    <span class="hljs-keyword">while</span>(fhq[now].r){
+        now=fhq[now].r;
+    }
+    <span class="hljs-built_in">cout</span>&lt;&lt;fhq[now].val&lt;&lt;<span class="hljs-built_in">endl</span>;
+    root=merge(x,y);
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">nxt</span><span class="hljs-params">(<span class="hljs-keyword">int</span> val)</span></span>{
+    split(root,val,x,y);
+    <span class="hljs-keyword">int</span> now=y;
+    <span class="hljs-keyword">while</span>(fhq[now].l) now=fhq[now].l;
+    <span class="hljs-built_in">cout</span>&lt;&lt;fhq[now].val&lt;&lt;<span class="hljs-built_in">endl</span>;
+    root=merge(x,y);
+    <span class="hljs-keyword">return</span> ;
+}
+
+<span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">()</span></span>{
+    <span class="hljs-keyword">int</span> n;
+    <span class="hljs-built_in">cin</span>&gt;&gt;n;
+    <span class="hljs-keyword">while</span>(n--&gt;<span class="hljs-number">0</span>){
+        <span class="hljs-keyword">int</span> opt,x;
+        <span class="hljs-built_in">cin</span>&gt;&gt;opt&gt;&gt;x;
+        <span class="hljs-keyword">if</span>(opt==<span class="hljs-number">1</span>) insert(x);
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(opt==<span class="hljs-number">2</span>) del(x);
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(opt==<span class="hljs-number">3</span>) getrank(x);
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(opt==<span class="hljs-number">4</span>) getnum(x);
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(opt==<span class="hljs-number">5</span>) pre(x);
+        <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(opt==<span class="hljs-number">6</span>) nxt(x);
+    }
+    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;
+}
+</div></code></pre>
+
+</body>
+</html>

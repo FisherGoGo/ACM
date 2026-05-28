@@ -118,19 +118,20 @@ struct KM {
         int aim = 0;
 
         while (1) {
-            while (!q.empty()) {
+            while (!q.empty() && !aim) {
                 int u = q.front(); q.pop();
-                for (int v = 1; v <= n; v++) {
+                for (int v = 1; v <= n && !aim; v++) {
                     if (visy[v]) continue;
                     ll d = lx[u] + ly[v] - w[u][v];
                     if (d < slack[v]) slack[v] = d, pre[v] = u;
                     if (!d) {
                         visy[v] = 1;
-                        if (!match[v]) { aim = v; goto found; }
-                        visx[match[v]] = 1, q.push(match[v]);
+                        if (!match[v]) aim = v;
+                        else visx[match[v]] = 1, q.push(match[v]);
                     }
                 }
             }
+            if (aim) break;
 
             ll d = 1e18;
             for (int v = 1; v <= n; v++)
@@ -142,16 +143,16 @@ struct KM {
                 else slack[i] -= d;
             }
 
-            for (int v = 1; v <= n; v++) {
+            for (int v = 1; v <= n && !aim; v++) {
                 if (!visy[v] && !slack[v]) {
                     visy[v] = 1;
-                    if (!match[v]) { aim = v; goto found; }
-                    visx[match[v]] = 1, q.push(match[v]);
+                    if (!match[v]) aim = v;
+                    else visx[match[v]] = 1, q.push(match[v]);
                 }
             }
+            if (aim) break;
         }
 
-    found:
         while (aim) {
             int nxt = match[pre[aim]];
             match[aim] = pre[aim];
